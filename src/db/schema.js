@@ -1,6 +1,18 @@
-import { integer, jsonb, pgEnum, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+import {
+  integer,
+  jsonb,
+  pgEnum,
+  pgTable,
+  serial,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
-export const matchStatusEnum = pgEnum("match_status", ["scheduled", "live", "finished"]);
+export const matchStatusEnum = pgEnum("match_status", [
+  "scheduled",
+  "live",
+  "finished",
+]);
 
 export const matches = pgTable("matches", {
   id: serial("id").primaryKey(),
@@ -17,10 +29,12 @@ export const matches = pgTable("matches", {
 
 export const commentary = pgTable("commentary", {
   id: serial("id").primaryKey(),
-  matchId: integer("match_id").notNull().references(() => matches.id),
+  matchId: integer("match_id")
+    .notNull()
+    .references(() => matches.id),
   minute: integer("minute"),
   sequence: integer("sequence"),
-  period: integer("period"),  
+  period: integer("period"),
   eventType: text("event_type"),
   actor: text("actor"),
   team: text("team"),
