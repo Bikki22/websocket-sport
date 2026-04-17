@@ -8,10 +8,11 @@ const app = express();
 const PORT = Number(process.env.PORT ?? 8000);
 const HOST = process.env.HOST ?? "0.0.0.0";
 
+const httpServer = http.createServer(app);
+
 // JSON middleware
 app.use(express.json());
-
-const httpServer = http.createServer(app);
+app.use(securityMiddleware());
 
 // Routes
 app.get("/", (req, res) => {
@@ -20,8 +21,6 @@ app.get("/", (req, res) => {
     url: `http://localhost:${PORT}`,
   });
 });
-
-app.use(securityMiddleware());
 
 app.use("/matches", matchesRouter);
 
