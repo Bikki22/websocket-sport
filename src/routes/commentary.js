@@ -8,7 +8,7 @@ import { commentary } from "../db/schema.js";
 import { db } from "../db/db.js";
 import { desc } from "drizzle-orm";
 
-export const commentaryRouter = Router();
+export const commentaryRouter = Router({ mergeParams: true });
 
 commentaryRouter.get("/", async (req, res) => {
   const paramsResult = matchIdParamSchema.safeParse(req.params);
@@ -64,14 +64,20 @@ commentaryRouter.post("/", async (req, res) => {
   }
 
   try {
+    const { minute, ...rest } = bodyResult.data;
     const [result] = await db
       .insert(commentary)
       .values({
         matchId: paramsResult.data.id,
-        ...bodyResult.data,
+        minute,
+        ...rest,
       })
-
       .returning();
+
+    if (res.app.locals.broadcastCommentary) {
+      res.app.locals.broadcastCommentary(result.matchId, result);
+    }
+
     res.status(201).json({ data: result });
   } catch (error) {
     console.error("Failed to create commentary:", error);

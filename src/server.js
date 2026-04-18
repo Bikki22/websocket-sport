@@ -26,8 +26,10 @@ app.get("/", (req, res) => {
 app.use("/matches", matchesRouter);
 app.use("/matches/:id/commentary", commentaryRouter);
 
-const { broadcastMatchCreated } = attachWebSocketServer(httpServer);
+const { broadcastMatchCreated, broadcastCommentary } =
+  attachWebSocketServer(httpServer);
 app.locals.broadcastMatchCreated = broadcastMatchCreated;
+app.locals.broadcastCommentary = broadcastCommentary;
 
 // Start server
 httpServer.listen(PORT, HOST, () => {
